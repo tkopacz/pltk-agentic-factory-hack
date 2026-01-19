@@ -2,6 +2,7 @@ using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.AI;
 using System.Collections.Concurrent;
+using System.Text.Json;
 
 namespace FactoryWorkflow;
 
@@ -20,11 +21,22 @@ public sealed class TextOnlyAgentExecutor : Executor<string, string>
     // Static collector for step results - ConcurrentQueue preserves FIFO order
     private static readonly ConcurrentQueue<AgentStepResult> _stepResults = new();
     
+    // Callback for streaming events - set via SetEventCallback before workflow execution
+    private static Func<AgentStepResult, Task>? _onStepCompleted;
+    
     public static IEnumerable<AgentStepResult> StepResults => _stepResults.ToArray();
 
     public static void ClearResults()
     {
         while (_stepResults.TryDequeue(out _)) { }
+    }
+
+    /// <summary>
+    /// Sets a callback that fires when each agent step completes (for SSE streaming).
+    /// </summary>
+    public static void SetEventCallback(Func<AgentStepResult, Task>? callback)
+    {
+        _onStepCompleted = callback;
     }
 
     public TextOnlyAgentExecutor(AIAgent agent) : base($"TextOnly-{agent.Name}")
@@ -68,16 +80,17 @@ public sealed class TextOnlyAgentExecutor : Executor<string, string>
                                 {
                                     ToolName = mcp.ToolName,
                                     CallId = mcp.CallId,
-                                    Arguments = mcp.Arguments?.ToString()
+                                    Arguments = SerializeArguments(mcp.Arguments)
                                 });
                             }
+                            else if (content is A2A.A2AEvent)
                             else if (content is FunctionCallContent fcc)
                             {
                                 agentStep.ToolCalls.Add(new ToolCallInfo
                                 {
                                     ToolName = fcc.Name,
                                     CallId = fcc.CallId,
-                                    Arguments = fcc.Arguments?.ToString()
+                                    Arguments = SerializeArguments(fcc.Arguments)
                                 });
                             }
 #pragma warning restore MEAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -122,8 +135,35 @@ public sealed class TextOnlyAgentExecutor : Executor<string, string>
 
         // Store step result for later collection (ConcurrentQueue preserves order)
         _stepResults.Enqueue(agentStep);
+        
+        // Notify SSE callback if registered (for streaming progress to frontend)
+        if (_onStepCompleted != null)
+        {
+            await _onStepCompleted(agentStep);
+        }
 
         // Return just the text for the next agent
         return agentStep.FinalMessage ?? "";
+    }
+
+    /// <summary>
+    /// Serializes tool arguments to JSON string. Handles Dictionary and other types.
+    /// </summary>
+    private static string? SerializeArguments(object? arguments)
+    {
+        if (arguments == null) return null;
+        
+        // If it's already a string (pre-serialized JSON), return as-is
+        if (arguments is string s) return s;
+        
+        // Serialize dictionaries and other objects to JSON
+        try
+        {
+            return JsonSerializer.Serialize(arguments);
+        }
+        catch
+        {
+            return arguments.ToString();
+        }
     }
 }
