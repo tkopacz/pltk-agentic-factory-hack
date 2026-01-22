@@ -154,7 +154,7 @@ Sample parts with low stock trigger reorder alerts.
 
 ### Task 1: Fork the repository
 
-Before you start, please fork this repository to your GitHub account by clicking the *Fork* button in the upper right corner of the repository's main screen (or follow the [documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#forking-a-repository)). This will allow you to make changes to the repository and save your progress.
+Before you start, please [fork this repository](https://github.com/microsoft/agentic-factory-hack/fork) to your GitHub account by clicking the *Fork* button in the upper right corner of the repository's main screen (or follow the [documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#forking-a-repository)). This will allow you to make changes to the repository and save your progress.
 
 ---
 
@@ -262,6 +262,8 @@ To perform certain tasks in the hackathon, you need additional permissions:
 
 - `Azure AI Developer` on the **Foundry project** resource (agent/project operations)
 - `Cognitive Services OpenAI Contributor` on the **Azure OpenAI** resource (calling chat completions)
+
+If these roles have not been assigned to your user in advance, then follow the below steps to apply the required role assignments.
 
 > [!NOTE]
 > Role assignments can take **5–10 minutes** to fully propagate. If you still see `PermissionDenied` errors after assigning roles, wait a few minutes, then run `az login --use-device-code` again and re-export your environment variables.
