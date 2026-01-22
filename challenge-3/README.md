@@ -17,7 +17,7 @@ The goals for this challenge are:
 - Examine agent observability
 
 
-## 🧭 Context and background information
+## 🧭 Context and Background
 
 ![Challenge 3 scenario](./images/challenge-3-scenario.png)
 
@@ -459,7 +459,7 @@ There can be a delay of **2-5 minutes** before metrics and traces appear in the 
 
 </details>
 
-## 🧠 Conclusion and reflection
+## 🧠 Conclusion
 
 Let’s quickly recap what we did.
 

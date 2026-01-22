@@ -98,6 +98,100 @@ The `COSMOS_ENDPOINT` variable must be set.
 | Container/database | `Code` | `Machines` |
 | ID/key | `Code` | `machine-001` |
 
+## Challenge README Structure
+
+Each challenge README follows a consistent structure with the following sections in order:
+
+### Required Sections
+
+| Order | Section | Emoji | Purpose |
+|-------|---------|-------|---------|
+| 1 | **Header** | — | Title, welcome, description, duration, prerequisites |
+| 2 | **Objective** | 🎯 | Bullet list of learning goals |
+| 3 | **Context and Background** | 🧭 | Scenario diagram, technical concepts, architecture |
+| 4 | **Tasks** | ✅ | Step-by-step instructions |
+| 5 | **Go Further** | 🚀 | Optional stretch goals (with NOTE callout) |
+| 6 | **Troubleshooting and FAQ** | 🛠️ | Collapsible problem/solution pairs |
+| 7 | **Conclusion** | 🧠 | Recap, architecture diagram, key takeaways, further reading |
+
+### Header Format
+
+```markdown
+# Challenge N: Title
+
+Welcome to Challenge N!
+
+Brief description of what the challenge covers.
+
+**Expected duration**: XX min  
+**Prerequisites**: [Challenge N-1](../challenge-N-1/README.md) successfully completed
+```
+
+### Section Templates
+
+#### Objective
+```markdown
+## 🎯 Objective
+
+The goals for this challenge are:
+
+- First goal
+- Second goal
+- Third goal
+```
+
+#### Go Further
+```markdown
+## 🚀 Go Further
+
+> [!NOTE]
+> Finished early? These tasks are **optional** extras for exploration. Feel free to move on to the next challenge — you can always come back later!
+
+### Optional Task Title
+Description of optional exploration task.
+```
+
+#### Tasks
+```markdown
+## ✅ Tasks
+
+### Task 1: First task title
+Instructions for the first task.
+
+### Task 2: Second task title
+Instructions for the second task.
+
+🎉 Congratulations! You've successfully completed Challenge N.
+```
+
+> [!NOTE]
+> Place the congratulations message at the **end of the Tasks section**, not in the Conclusion.
+
+#### Troubleshooting
+```markdown
+## 🛠️ Troubleshooting and FAQ
+
+<details>
+<summary>Problem: Description of the problem</summary>
+
+Solution or explanation here.
+
+</details>
+```
+
+#### Conclusion
+```markdown
+## 🧠 Conclusion
+
+🎉 Congratulations! Summary of what was accomplished.
+
+Key takeaways or reflection points.
+
+If you want to expand your knowledge on what we've covered in this challenge, have a look at the content below:
+
+- [Link title](url)
+```
+
 ## Numbered Callouts for Diagrams
 
 When explaining numbered elements in diagrams (e.g., architecture diagrams, flow diagrams), use **filled circled numbers** for better readability:

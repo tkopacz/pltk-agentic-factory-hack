@@ -17,7 +17,7 @@ The goals for this challenge are:
 - Understand how different agent types and hosting models work together
 - Observe execution via the Aspire dashboard and traces
 
-## 🧭 Context and background information
+## 🧭 Context and Background
 
 ![Challenge 4 scenario](./images/challenge-4-scenario.png)
 
@@ -32,7 +32,9 @@ At a high level, each agent contributes a specific capability to the workflow:
 Challenge 4 demonstrates how a “real application” can orchestrate multiple agents in a workflow—where agents are not the product UI, but capabilities that enhance the solution.
 
 Now we put all previously used Azure Resources in action.
-![Challenge 4 Azure resources](./images/challenge-4-azure-resources.png)
+
+<img src="./images/challenge-4-azure-resources.png" alt="Azure Resources" width="60%">
+
 
 ### Why Aspire (workflow host)
 
@@ -40,9 +42,9 @@ We use **.NET Aspire** as the host for the workflow. Aspire is an opinionated fr
 
 - It gives a consistent developer experience for running multi-service apps locally.
 - It provides a built-in dashboard for observability.
-- It supports polyglot solutions (this repo includes both **.NET** and **Python** components).
+- It supports polyglot solutions (this repo includes both .NET and Python components).
 
-In practice, that means Aspire can orchestrate both **.NET services** and **Python processes** side-by-side, which is exactly what we need for this multi-agent workflow.
+In practice, that means Aspire can orchestrate both .NET services and Python processes side-by-side, which is exactly what we need for this multi-agent workflow.
 
 In other words, Aspire is the “glue” that runs the workflow host, API, UI, and agent processes together and gives you one place to see logs, health, and traces. For agentic systems, that observability is especially useful because a single user action can fan out into multiple agent calls and tool invocations.
 
@@ -55,15 +57,28 @@ This solution includes different types of agents:
 	- Running fully in **Azure AI Foundry Agent Service** (no local execution)
 - **Repair Planner Agent**
 	- Implemented in C#
-	- Runs with local logic and direct access to data sources like Cosmos DB
+	- Runs with local logic and direct access to data sources like **Cosmos DB**
 	- Invoked from the workflow using **Agent-to-Agent (A2A)**
 - **Maintenance Scheduler Agent** and **Parts Ordering Agent**
 	- Python agents with local logic
-	- Invoked with **A2A** similar to the Repair Planner Agent
+	- Invoked with A2A similar to the **Repair Planner Agent**
 
 **A2A** is a pattern for letting a workflow invoke an agent through a consistent interface, so you can combine independently implemented agents without tightly coupling everything together.
 
 This matters in a polyglot setup: the workflow can call an agent implemented in a different language (or hosted in a different process) the same way it calls any other agent. It also gives you a clean boundary between orchestration (the workflow) and capabilities (the agents), which makes the system easier to evolve over time.
+
+#### Publishing agents via Azure API Management
+
+In Challenge 1, we explored how to use [API Management as an AI Gateway](../challenge-1/README.md#api-management-as-ai-gateway) for governing and securing access to AI services. **Azure API Management** can also be used to publish agents as A2A endpoints, enabling governed agent-to-agent communication at scale.
+
+With **API Management** as an A2A gateway, you get:
+
+- **Centralized agent discovery**: Agents can be registered and discovered through a unified gateway.
+- **Security and authentication**: Apply consistent authentication, authorization, and rate limiting policies across all agent endpoints.
+- **Observability**: Monitor agent invocations, latencies, and errors through APIM's built-in analytics.
+- **Protocol translation**: APIM can handle protocol differences and provide a consistent A2A interface regardless of the underlying agent implementation.
+
+This approach is particularly valuable in enterprise scenarios where you need to expose agents to multiple consumers while maintaining governance and control over how agents are accessed and invoked.
 
 ## ✅ Tasks
 
@@ -71,13 +86,8 @@ This matters in a polyglot setup: the workflow can call an agent implemented in 
 > The Challenge 4 workflow expects the **Anomaly Classification** and **Fault Diagnosis** agents to be hosted in **Azure AI Foundry Agent Service**.
 > Make sure you have completed [Challenge 1](../challenge-1/README.md) before starting the workflow.
 
-### Task 1: Workflow configuration
 
-Set the following environment variables (for example via a `.env` file in `challenge-4/agent-workflow/app/`):
-
-- `AZURE_AI_PROJECT_ENDPOINT` – your Foundry project endpoint
-
-### Task 2: Start Aspire
+### Task 1: Start Aspire
 
 From the repo root:
 
@@ -86,58 +96,101 @@ cd challenge-4/agent-workflow
 aspire run
 ```
 
-### Task 3: Make the workflow API port public (Codespaces)
+### Task 2: Make the workflow API port public (Codespaces)
 
-The workflow API runs on port **5231**. In VS Code / Codespaces:
+The workflow API runs on port `5231`. In VS Code / **GitHub Codespaces**:
 
 ![Port opening](./images/challenge-4-ports.png)
 
-- Open the **Ports** tab
+- Open the *Ports* tab
 - Find port `5231`
-- Set **Port Visibility** to **Public**
+- Set *Port Visibility* to *Public*
 
 > This allows the frontend to call the API from the browser.
 
-### Task 4: Open the frontend
+### Task 3: Open the frontend
 
 Once Aspire is running, it will provide links in the output.
 
-- Click the **frontend** link
+- Click the *frontend* link
 - You should see an app similar to the screenshot below
 
 ![Factory Agent Workflow UI overview](./images/challenge-4-frontend-link.png)
 
 - Click the link (using ALT+Click)
+
 The Factory Workflow UI opens in your browser
-![Factory Workflow UI](./images/challenge-4-agent-workflow-ui-start.png)
+![Factory Workflow UI start](./images/challenge-4-agent-workflow-ui-start.png)
 
-### Task 5. Run the workflow
-Click the _Trigger Anomaly_ button
-In the frontend, watch the **Agent Workflow** panel as the workflow progresses:
+### Task 4: Run the workflow
 
-- Anomaly Classification Agent
-- Fault Diagnosis Agent
-- Repair Planner Agent
-- Maintenance Scheduler Agent
-- Parts Ordering Agent
+Click the *Trigger Anomaly* button.
+
+In the frontend, watch the *Agent Workflow* panel as the workflow progresses:
+
+- **Anomaly Classification Agent**
+- **Fault Diagnosis Agent**
+- **Repair Planner Agent**
+- **Maintenance Scheduler Agent**
+- **Parts Ordering Agent**
+
+![Factory Workflow UI in progress](./images/challenge-4-agent-workflow-ui-inprogress.png)
 
 You should see steps move through states (queued/working/done/error), tool calls and a request/response payload summary.
 
-When finished you should see something similar to this
+When finished you should see something similar to this:
+
 ![Factory Agent Workflow Finished](./images/challenge-4-agent-workflow-ui-end.png)
 
-### Task 6: View the dashboard
+### Task 5: View the dashboard
 
 Aspire includes a dashboard to observe running services.
 
-- In the Aspire output, click the **dashboard** link (using ALT+Click)
+- In the Aspire output, click the *dashboard* link (using ALT+Click)
+
 ![Dashboard link](./images/challenge-4-dashboard-link.png)
 
-The dashboard will start in your browser and show the resources
+The dashboard will start in your browser and show the resources.
+
 ![Dashboard start](./images/challenge-4-dashboard-resources.png)
 
-- Click on _Console_ and you will see the invocation chain in the workflow
+- Click on *Console* and you will see the invocation chain in the workflow
+
 ![Dashboard console](./images/challenge-4-dashboard-console.png)
+
+🎉 Congratulations! You've successfully completed Challenge 4.
+
+## 🚀 Go Further
+
+> [!NOTE]
+> Finished early? These tasks are **optional** extras for exploration.
+
+### Deploy to Azure Container Apps
+
+In this challenge we ran Aspire locally for development, but the same pattern can be deployed as a hosted application. The lab environment includes both an **Azure Container Registry** and a **Container Apps Environment**.
+
+Try packaging the workflow host + frontend and deploying it:
+
+1. Build container images for the workflow services
+2. Push images to **Azure Container Registry**
+3. Deploy to **Azure Container Apps**
+4. Configure environment variables for the deployed services
+
+### Explore the Aspire dashboard traces
+
+The Aspire dashboard provides detailed distributed traces. Try:
+
+- Clicking on individual trace spans to see timing details
+- Following a request through multiple services
+- Identifying bottlenecks in agent invocations
+
+### Add custom telemetry
+
+Extend the workflow with custom telemetry:
+
+- Add custom metrics for agent response times
+- Create custom spans for specific operations
+- Export traces to **Application Insights**
 
 ## 🛠️ Troubleshooting and FAQ
 
@@ -163,9 +216,9 @@ export $(cat .env | xargs)
 <details>
 <summary>Problem: I get HTTP 401 / PermissionDenied calling model endpoints</summary>
 
-This usually means your identity is missing Azure OpenAI data-plane permissions on the **Azure OpenAI resource**.
+This usually means your identity is missing **Azure OpenAI** data-plane permissions on the **Azure OpenAI** resource.
 
-Ensure you have **Cognitive Services OpenAI Contributor** (or **Cognitive Services OpenAI User**) assigned at the Azure OpenAI resource scope.
+Ensure you have **Cognitive Services OpenAI Contributor** (or **Cognitive Services OpenAI User**) assigned at the **Azure OpenAI** resource scope.
 
 See: [Challenge 0 – Task 7: Assign additional permissions](../challenge-0/README.md#task-7-assign-additional-permissions)
 
@@ -174,7 +227,7 @@ See: [Challenge 0 – Task 7: Assign additional permissions](../challenge-0/READ
 <details>
 <summary>Problem: The frontend loads, but calls to /api fail</summary>
 
-- Confirm port `5231` is forwarded and set to **Public** in the Ports view.
+- Confirm port `5231` is forwarded and set to *Public* in the *Ports* view.
 - Confirm the frontend is pointing at the correct API URL.
 - Check Aspire dashboard logs for CORS or network errors.
 
@@ -191,25 +244,31 @@ echo "$AZURE_AI_PROJECT_ENDPOINT"
 
 </details>
 
-## 🧠 Conclusion and reflection
+## 🧠 Conclusion
 
-🎉 Congratulations! You’ve successfully run an end-to-end, polyglot agent workflow hosted with Aspire.
+You’ve now run an end-to-end, polyglot agent workflow hosted with Aspire. Let's reflect how the different pieces fits together.
 
 ![Challenge 4 workflow architecture](./images/challenge-4-workflow-architecture.png)
 
 The diagram above illustrates the full workflow in 9 steps:
 
-1. A user triggers a sample anomaly in the Aspire **Factory Agent UI** (sample machine + sample metrics).
-2. The **agent framework workflow** (implemented in .NET) is triggered.
-3. The workflow invokes the **Anomaly Classification Agent** running in **Agent Service**.
-4. The Anomaly Classification Agent uses **remote MCP tools** to call APIM and fetch required data.
-5. The workflow invokes the **Fault Diagnosis Agent** running in **Agent Service**.
-6. The Fault Diagnosis Agent uses **remote MCP tools** to call APIM and query **Azure AI Search**.
-7. The workflow invokes the **Repair Planner Agent** locally via **A2A**, running in a separate .NET process. It still uses the agent registration in Foundry, but executes its logic locally.
-8. The Repair Planner Agent queries **Cosmos DB** locally to retrieve operational data.
-9. The final two agents (**Maintenance Scheduler** and **Parts Ordering**) are implemented in Python and also run locally in a separate process (similar to Repair Planner). They’re invoked via **A2A** and query Cosmos DB directly.
+❶ A user triggers a sample anomaly in the Aspire **Factory Agent UI** (sample machine + sample metrics).
 
-In this challenge we run Aspire locally for development, but the same pattern can be deployed as a hosted application (for example as a containerized workload in Azure Container Apps). If you want an optional stretch goal, try packaging the workflow host + frontend and deploying it. The lab environment in Azure containes both an **Azure Container Registry** and a **Container Apps Environment**.
+❷ The **agent framework workflow** (implemented in .NET) is triggered.
+
+❸ The workflow invokes the **Anomaly Classification Agent** running in **Azure AI Foundry Agent Service**.
+
+❹ The **Anomaly Classification Agent** uses remote MCP tools to call **API Management** and fetch required data.
+
+❺ The workflow invokes the **Fault Diagnosis Agent** running in **Azure AI Foundry Agent Service**.
+
+❻ The **Fault Diagnosis Agent** uses remote MCP tools to call **API Management** and query **Azure AI Search**.
+
+❼ The workflow invokes the **Repair Planner Agent** locally via A2A, running in a separate .NET process. It still uses the agent registration in **Azure AI Foundry**, but executes its logic locally.
+
+❽ The **Repair Planner Agent** queries **Cosmos DB** locally to retrieve operational data.
+
+❾ The final two agents (**Maintenance Scheduler Agent** and **Parts Ordering Agent**) are implemented in Python and also run locally in a separate process (similar to the **Repair Planner Agent**). They're invoked via A2A and query **Cosmos DB** directly.
 
 In this challenge, you built and ran a solution where agents are **part of the application**, not the entire application.
 
@@ -217,12 +276,26 @@ In this challenge, you built and ran a solution where agents are **part of the a
 - **Agents can be polyglots**: different agents can be built in different languages and still work together through standard invocation patterns (like A2A).
 - **This is close to traditional application development**: you still assemble services, define interfaces, configure environments, and diagnose issues with logs and traces—agents simply enhance the solution’s capabilities.
 
-If you want to expand your knowledge on what we’ve covered in this challenge, have a look at the content below:
+### Alternative: DevUI for lightweight workflow visualization
 
-- https://aspire.dev/get-started/what-is-aspire/
-- https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/agent-to-agent?view=foundry&pivots=python
+In this challenge we used **Aspire** as the workflow host, which provides comprehensive orchestration and observability for multi-service applications. However, if you only need simple workflow visualization during development—without the full Aspire infrastructure—the **Agent Framework** also includes **DevUI**.
 
-Congratulations! 🎉 You’ve successfully completed the final challenge of the Factory maintenance multi-agent workflow workshop. You now have a complete, end-to-end agentic system that combines:
+**DevUI** is a lightweight development tool that provides:
+
+- Real-time visualization of agent workflow execution
+- Inspection of agent inputs, outputs, and tool calls
+- A simpler setup for quick iteration during development
+
+DevUI is ideal when you're focused on debugging a single agent or workflow and don't need the full distributed tracing and service orchestration that Aspire provides.
+
+If you want to expand your knowledge on what we've covered in this challenge, have a look at the content below:
+
+- [What is .NET Aspire?](https://aspire.dev/get-started/what-is-aspire/)
+- [Agent-to-Agent in Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/agent-to-agent?view=foundry&pivots=python)
+- [Agent-to-Agent API in Azure API Management](https://learn.microsoft.com/en-us/azure/api-management/agent-to-agent-api)
+- [DevUI for Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/devui/?pivots=programming-language-csharp)
+
+You've now completed the final challenge of the Factory maintenance multi-agent workflow workshop. You have a complete, end-to-end agentic system that combines:
 
 - **🤖 AI-powered agents** for anomaly detection, diagnosis, and planning
 - **🔌 MCP integration** for governed, extensible tool connectivity

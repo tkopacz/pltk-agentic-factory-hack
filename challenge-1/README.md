@@ -16,7 +16,7 @@ The goals for this challenge are:
 - Use MCP servers for remote tool invocation
 - Learn how **Foundry IQ** can be used to ground agents with your own data
 
-## 🧭 Context and background information
+## 🧭 Context and Background
 
 ![Challenge 1 scenario](./images/challenge-1-scenario.png)
 First, we’ll develop an **Anomaly Classification Agent** to interpret detected anomalies and raise corresponding maintenance alerts. Next, we’ll implement a **Fault Diagnosis Agent** to determine the root cause of an anomaly so you can prepare for maintenance. The agents will use a number of different tools to accomplish their tasks.
@@ -503,7 +503,7 @@ Make sure you have assigned yourself the *AI Developer* role on the **Foundry Pr
 </details>
 
 
-## 🧠 Conclusion and reflection
+## 🧠 Conclusion
 Let’s quickly recap what we did.
 
 In [Task 1](#task-1-create-and-test-initial-anomaly-classification-agent) we created the **Anomaly Classification Agent** using a Python script.

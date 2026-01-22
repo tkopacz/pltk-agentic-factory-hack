@@ -446,7 +446,7 @@ After saving the file, the `example-solution` folder will appear in the Explorer
 
 </details>
 
-## 🧠 Conclusion and reflection
+## 🧠 Conclusion
 
 
 Let’s reflect on a few things

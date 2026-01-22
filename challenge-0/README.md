@@ -20,7 +20,7 @@ The goals for this challenge are:
 - Provision the Azure resources needed for the upcoming challenges.
 - Seed sample data for the tire factory predictive maintenance multi-agent system.
 
-## 🧭 Context and background information
+## 🧭 Context and Background
 
 A number of different Azure Resources are used as part of this hackathon.
 
@@ -293,7 +293,7 @@ az login --use-device-code
 
 ### Task 8: Seed Factory Sample Data
 
-As mentioned in [Context and background information](#-context-and-background-information), there are several data sources used throughout the hackathon. Run the script below to upload data to **Cosmos DB** and the **Storage Account**, and to create the required APIs in **API Management**.
+As mentioned in [Context and Background](#-context-and-background), there are several data sources used throughout the hackathon. Run the script below to upload data to **Cosmos DB** and the **Storage Account**, and to create the required APIs in **API Management**.
 
 ```bash
 # Run data seeding script
@@ -400,7 +400,7 @@ chmod +x challenge-0/seed-data.sh
 </details>
 
 
-## 🧠 Conclusion and reflection
+## 🧠 Conclusion
 
 This forms the foundation for your multi-agent predictive maintenance hackathon system.
 
