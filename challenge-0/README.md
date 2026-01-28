@@ -276,8 +276,10 @@ To perform certain tasks in the hackathon, you need the following permissions:
 <details>
 <summary>Assign permissions</summary>
 
+
 > [!NOTE]
 > Role assignments can take **5–10 minutes** to fully propagate. If you still see `PermissionDenied` errors after assigning roles, wait a few minutes, then run `az login --use-device-code` again and re-export your environment variables.
+
 
 ```bash
 # Get your Entra ID (AAD) user object ID
