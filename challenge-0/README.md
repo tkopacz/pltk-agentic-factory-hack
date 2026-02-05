@@ -223,6 +223,11 @@ az deployment group create \
   --parameters location=$LOCATION
 ```
 
+# If redeployed - purge all soft-deleted Azure Resources
+```
+./purge-soft-deleted.sh --resource-group $RESOURCE_GROUP
+```
+
 ⏱️Deployment takes approximately 5-10 minutes.
 
 
