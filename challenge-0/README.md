@@ -214,7 +214,7 @@ export RESOURCE_GROUP="rg-tire-factory-hack-${RG_SUFFIX}"
 export LOCATION="swedencentral"
 
 # Create resource group
-az group create --name $RESOURCE_GROUP --location $LOCATION
+az group create --name $RESOURCE_GROUP --location $LOCATION --tags SecurityControl=Ignore SecurityExemption=StorageAccountKeyAccess
 
 # Deploy infrastructure
 az deployment group create \
